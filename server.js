@@ -63,6 +63,16 @@ function getActiveSessions() {
     }
 }
 
+// Get Public IP of VPS
+function getPublicIp() {
+    if (!isLinux) return '127.0.0.1';
+    try {
+        return execSync("curl -s -m 2 ifconfig.me || curl -s -m 2 api.ipify.org || hostname -I | awk '{print $1}'").toString().trim();
+    } catch (_) {
+        return 'Unknown';
+    }
+}
+
 // Get system metrics
 function getSystemMetrics() {
     const stats = {
@@ -126,11 +136,7 @@ function getSystemMetrics() {
         }
 
         // Public IP
-        try {
-            stats.ip = execSync("curl -s -m 2 ifconfig.me || curl -s -m 2 api.ipify.org || hostname -I | awk '{print $1}'").toString().trim();
-        } catch (_) {
-            stats.ip = 'Unknown';
-        }
+        stats.ip = getPublicIp();
     } catch (e) {
         console.error('Error fetching system stats:', e);
     }
