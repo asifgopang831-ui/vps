@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSH WebSocket Manager | Premium Dashboard</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- App Container -->
+    <div id="app" class="app-container">
+        
+        <!-- FIRST RUN SETUP SYSTEM -->
+        <div id="first-run-container" class="auth-wrapper hidden">
+            <div class="auth-card glass glow-purple">
+                <div class="auth-header">
+                    <i class="fa-solid fa-shield-halved auth-logo glow-text-purple"></i>
+                    <h2>Setup Admin Account</h2>
+                    <p>Initialize your premium VPS manager credentials</p>
+                </div>
+                <form id="first-run-form">
+                    <div class="input-group">
+                        <label for="setup-username"><i class="fa-solid fa-user"></i> Admin Username</label>
+                        <input type="text" id="setup-username" placeholder="e.g. admin" required autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="setup-password"><i class="fa-solid fa-lock"></i> Admin Password</label>
+                        <input type="password" id="setup-password" placeholder="Min 5 characters" required minlength="5">
+                    </div>
+                    <button type="submit" class="btn btn-purple btn-block">
+                        <span class="btn-text">Save & Login</span> <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- LOGIN SYSTEM -->
+        <div id="login-container" class="auth-wrapper hidden">
+            <div class="auth-card glass glow-blue">
+                <div class="auth-header">
+                    <i class="fa-solid fa-key auth-logo glow-text-blue"></i>
+                    <h2>Welcome Back</h2>
+                    <p>Login to manage your SSH WS tunnel servers</p>
+                </div>
+                <form id="login-form">
+                    <div class="input-group">
+                        <label for="login-username"><i class="fa-solid fa-user"></i> Username</label>
+                        <input type="text" id="login-username" placeholder="Username" required autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="login-password"><i class="fa-solid fa-lock"></i> Password</label>
+                        <input type="password" id="login-password" placeholder="Password" required>
+                    </div>
+                    <div id="login-error" class="error-alert hidden">
+                        <i class="fa-solid fa-circle-exclamation"></i> Invalid credentials.
+                    </div>
+                    <button type="submit" class="btn btn-blue btn-block">
+                        <span class="btn-text">Sign In</span> <i class="fa-solid fa-right-to-bracket"></i>
+                    </button>
+                    <div class="auth-footer-link" id="link-to-register">
+                        Don't have an account? <a href="#" id="btn-show-register" class="text-blue">Register here</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- PUBLIC REGISTRATION SYSTEM -->
+        <div id="register-container" class="auth-wrapper hidden">
+            <div class="auth-card glass glow-purple">
+                <div class="auth-header">
+                    <i class="fa-solid fa-user-plus auth-logo glow-text-purple"></i>
+                    <h2>Register Account</h2>
+                    <p>Create a free trial SSH WebSocket account</p>
+                </div>
+                <form id="register-form">
+                    <div class="input-group">
+                        <label for="register-username"><i class="fa-solid fa-user"></i> Username</label>
+                        <input type="text" id="register-username" placeholder="Alphanumeric, can contain - or _" required autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="register-password"><i class="fa-solid fa-lock"></i> Password</label>
+                        <input type="password" id="register-password" placeholder="Password (Min 4 chars)" required minlength="4">
+                    </div>
+                    <div id="register-error" class="error-alert hidden">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                    </div>
+                    <button type="submit" class="btn btn-purple btn-block">
+                        <span class="btn-text">Register Account</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                    </button>
+                    <div class="auth-footer-link">
+                        Already have an account? <a href="#" id="btn-show-login" class="text-purple">Sign In</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- REGISTRATION SUCCESS CARD -->
+        <div id="reg-success-container" class="auth-wrapper hidden">
+            <div class="auth-card glass glow-green" style="max-width: 550px;">
+                <div class="auth-header">
+                    <i class="fa-solid fa-circle-check auth-logo text-green"></i>
+                    <h2>Registration Successful!</h2>
+                    <p>Your SSH WebSocket account has been created.</p>
+                </div>
+                <div class="success-details" style="text-align: left; margin-bottom: 24px;">
+                    <div class="detail-row" style="margin-bottom: 12px;">
+                        <strong>Username:</strong> <code id="reg-success-user" class="text-blue" style="font-size: 1.1rem;"></code>
+                    </div>
+                    <div class="detail-row" style="margin-bottom: 12px;">
+                        <strong>Password:</strong> <code id="reg-success-pass" class="text-blue" style="font-size: 1.1rem;"></code>
+                    </div>
+                    <div class="detail-row" style="margin-bottom: 12px;">
+                        <strong>Expiry Date:</strong> <span id="reg-success-expiry" class="text-purple"></span>
+                    </div>
+                    <div class="detail-row" style="margin-bottom: 12px;">
+                        <strong>Device Limit:</strong> <span>1 Device</span>
+                    </div>
+                    <div class="payload-box" style="margin-top: 18px; margin-bottom: 18px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <label style="font-weight:600; margin:0;">HTTP Custom Format (SSH Line)</label>
+                            <button class="btn btn-sm btn-outline-purple btn-copy-inline" data-target="reg-success-custom-val"><i class="fa-solid fa-copy"></i> Copy Line</button>
+                        </div>
+                        <input type="text" id="reg-success-custom-val" readonly style="font-family: monospace; font-size: 0.9rem; background: rgba(0,0,0,0.35);">
+                    </div>
+                    
+                    <div class="payload-box" style="margin-top: 20px;">
+                        <label style="font-weight:600; margin-bottom:6px;">Your WebSocket Payload (e.g. for HTTP Custom)</label>
+                        <textarea id="reg-success-payload" class="code-area" readonly style="height: 100px; font-size: 0.8rem;"></textarea>
+                    </div>
+                </div>
+                <button id="btn-reg-success-close" class="btn btn-green btn-block">
+                    Back to Login
+                </button>
+            </div>
+        </div>
+
+        <!-- MAIN DASHBOARD -->
+        <div id="dashboard-container" class="dashboard-wrapper hidden">
+            <!-- Sidebar -->
+            <aside class="sidebar glass">
+                <div class="sidebar-brand">
+                    <i class="fa-solid fa-circle-nodes glow-text-purple"></i>
+                    <span>SSH WS <span class="brand-sub">PANEL</span></span>
+                </div>
+                <nav class="sidebar-menu">
+                    <a href="#" class="menu-item active" data-tab="tab-overview">
+                        <i class="fa-solid fa-chart-pie"></i> Overview
+                    </a>
+                    <a href="#" class="menu-item" data-tab="tab-accounts">
+                        <i class="fa-solid fa-users-gear"></i> Manage Accounts
+                    </a>
+                    <a href="#" class="menu-item" data-tab="tab-payloads">
+                        <i class="fa-solid fa-code"></i> Payload Generator
+                    </a>
+                    <a href="#" class="menu-item" data-tab="tab-settings">
+                        <i class="fa-solid fa-sliders"></i> Settings
+                    </a>
+                </nav>
+                <div class="sidebar-footer">
+                    <button id="btn-logout" class="btn btn-danger btn-block">
+                        <i class="fa-solid fa-right-from-bracket"></i> <span>Sign Out</span>
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="main-content">
+                <!-- Topbar -->
+                <header class="topbar">
+                    <div class="topbar-title">
+                        <h1 id="page-title">Overview</h1>
+                    </div>
+                    <div class="topbar-actions">
+                        <div class="vps-ip-badge glass">
+                            <i class="fa-solid fa-server"></i> IP: <span id="vps-ip">Loading...</span>
+                        </div>
+                        <div class="uptime-badge glass">
+                            <i class="fa-solid fa-clock-rotate-left"></i> Uptime: <span id="vps-uptime">Loading...</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- TAB: OVERVIEW -->
+                <section id="tab-overview" class="tab-content active">
+                    <!-- Stats Grid -->
+                    <div class="stats-grid">
+                        <div class="stat-card glass glow-blue">
+                            <div class="stat-icon-wrapper blue">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3>Total Accounts</h3>
+                                <span id="stat-total-accounts" class="stat-val">0</span>
+                            </div>
+                        </div>
+                        <div class="stat-card glass glow-green">
+                            <div class="stat-icon-wrapper green">
+                                <i class="fa-solid fa-user-check"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3>Active Accounts</h3>
+                                <span id="stat-active-accounts" class="stat-val">0</span>
+                            </div>
+                        </div>
+                        <div class="stat-card glass glow-red">
+                            <div class="stat-icon-wrapper red">
+                                <i class="fa-solid fa-user-xmark"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3>Expired / Locked</h3>
+                                <span id="stat-expired-accounts" class="stat-val">0</span>
+                            </div>
+                        </div>
+                        <div class="stat-card glass glow-purple pulsing">
+                            <div class="stat-icon-wrapper purple">
+                                <i class="fa-solid fa-network-wired"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3>Active Tunnels</h3>
+                                <span id="stat-active-connections" class="stat-val">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Performance -->
+                    <div class="panel-section">
+                        <h2 class="section-title">System Diagnostics</h2>
+                        <div class="diagnostics-grid">
+                            <!-- CPU Card -->
+                            <div class="diag-card glass">
+                                <div class="diag-header">
+                                    <span>CPU Load</span>
+                                    <span id="cpu-percent">0%</span>
+                                </div>
+                                <div class="progress-bar-bg">
+                                    <div id="cpu-progress" class="progress-bar progress-purple" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <!-- RAM Card -->
+                            <div class="diag-card glass">
+                                <div class="diag-header">
+                                    <span>RAM Usage</span>
+                                    <span id="ram-usage-text">0 / 0 MB (0%)</span>
+                                </div>
+                                <div class="progress-bar-bg">
+                                    <div id="ram-progress" class="progress-bar progress-blue" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <!-- Storage Card -->
+                            <div class="diag-card glass">
+                                <div class="diag-header">
+                                    <span>Disk Space</span>
+                                    <span id="disk-usage-text">0 / 0 GB (0%)</span>
+                                </div>
+                                <div class="progress-bar-bg">
+                                    <div id="disk-progress" class="progress-bar progress-green" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Guide / Service Status -->
+                    <div class="overview-split">
+                        <div class="panel-section glass half-width">
+                            <h3 class="section-title"><i class="fa-solid fa-circle-check text-green"></i> Services Status</h3>
+                            <div class="services-list">
+                                <div class="service-item">
+                                    <div class="service-info">
+                                        <i class="fa-solid fa-shield-halved"></i>
+                                        <span>SSH Daemon (Port 22)</span>
+                                    </div>
+                                    <span class="status-badge status-online">Online</span>
+                                </div>
+                                <div class="service-item">
+                                    <div class="service-info">
+                                        <i class="fa-solid fa-plug"></i>
+                                        <span>WebSocket Tunnel (Port 80)</span>
+                                    </div>
+                                    <span class="status-badge status-online">Online</span>
+                                </div>
+                                <div class="service-item">
+                                    <div class="service-info">
+                                        <i class="fa-solid fa-clock"></i>
+                                        <span>Limit Daemon</span>
+                                    </div>
+                                    <span class="status-badge status-online">Online</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel-section glass half-width">
+                            <h3 class="section-title"><i class="fa-solid fa-circle-info text-blue"></i> Fast Commands</h3>
+                            <p class="small-desc">Manage core VPS services directly from the panel.</p>
+                            <div class="action-buttons-group">
+                                <button id="btn-restart-ssh" class="btn btn-outline-purple">
+                                    <i class="fa-solid fa-arrows-rotate"></i> Restart OpenSSH
+                                </button>
+                                <button id="btn-restart-panel" class="btn btn-outline-danger">
+                                    <i class="fa-solid fa-power-off"></i> Reboot Panel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB: ACCOUNTS -->
+                <section id="tab-accounts" class="tab-content">
+                    <div class="action-header">
+                        <div class="search-bar-wrapper glass">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="account-search" placeholder="Search accounts...">
+                        </div>
+                        <button id="btn-open-create-modal" class="btn btn-purple">
+                            <i class="fa-solid fa-user-plus"></i> Create Account
+                        </button>
+                    </div>
+
+                    <!-- Accounts Table Panel -->
+                    <div class="table-container glass">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Password</th>
+                                    <th>Limit</th>
+                                    <th>Expiry Date</th>
+                                    <th>Days Left</th>
+                                    <th>Status</th>
+                                    <th>Conns</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="accounts-table-body">
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted">Loading accounts...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- TAB: PAYLOAD GENERATOR -->
+                <section id="tab-payloads" class="tab-content">
+                    <div class="payload-panel glass">
+                        <h2>Client Configuration Generator</h2>
+                        <p>Generate payload details to configure clients like HTTP Custom, NapsternetV, HA Tunnel, etc.</p>
+                        
+                        <div class="payload-form">
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="payload-bug">Decoy/SNI Host (Bug)</label>
+                                    <input type="text" id="payload-bug" placeholder="e.g. www.cloudflare.com" value="www.google.com">
+                                </div>
+                                <div class="input-group">
+                                    <label for="payload-port">WS Proxy Port</label>
+                                    <input type="text" id="payload-port" readonly value="8080">
+                                </div>
+                            </div>
+                            
+                            <div class="payload-outputs">
+                                <div class="payload-box">
+                                    <div class="payload-box-header">
+                                        <span>WebSocket HTTP Payload</span>
+                                        <button class="btn btn-sm btn-outline-blue btn-copy" data-target="ws-payload-text">
+                                            <i class="fa-solid fa-copy"></i> Copy
+                                        </button>
+                                    </div>
+                                    <textarea id="ws-payload-text" class="code-area" readonly></textarea>
+                                </div>
+
+                                <div class="payload-box">
+                                    <div class="payload-box-header">
+                                        <span>Direct Config format</span>
+                                        <button class="btn btn-sm btn-outline-purple btn-copy" data-target="direct-config-text">
+                                            <i class="fa-solid fa-copy"></i> Copy
+                                        </button>
+                                    </div>
+                                    <textarea id="direct-config-text" class="code-area" readonly></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB: SETTINGS -->
+                <section id="tab-settings" class="tab-content">
+                    <div class="settings-card glass">
+                        <h2>System Configurations</h2>
+                        <p>Modify ports and decoy hosts. Note: Port updates will require restarting services.</p>
+                        <form id="settings-form">
+                            <div class="input-group">
+                                <label for="setting-ws-port">WebSocket Proxy Port</label>
+                                <input type="number" id="setting-ws-port" required min="1" max="65535">
+                                <small class="text-muted">Port for SSH WebSocket requests (usually 80 or 8080)</small>
+                            </div>
+                            <div class="input-group">
+                                <label for="setting-ssh-port">SSH Daemon Port</label>
+                                <input type="number" id="setting-ssh-port" required min="1" max="65535">
+                                <small class="text-muted">Local SSH server port (typically 22 or 2222)</small>
+                            </div>
+                            <div class="input-group">
+                                <label for="setting-decoy">Decoy Camouflage URL</label>
+                                <input type="url" id="setting-decoy" required>
+                                <small class="text-muted">Redirect destination for raw non-WS HTTP traffic</small>
+                            </div>
+                            <div class="input-group">
+                                <label for="setting-domain">Domain Name (Optional)</label>
+                                <div style="display: flex; gap: 8px;">
+                                    <input type="text" id="setting-domain" placeholder="e.g. fast.myvpn.com" style="flex: 1;">
+                                    <button type="button" id="btn-verify-domain" class="btn btn-outline-purple" style="white-space: nowrap;"><i class="fa-solid fa-square-check"></i> Verify DNS</button>
+                                </div>
+                                <small class="text-muted">A-record must point to your VPS IP: <span id="setting-vps-ip-display" class="text-purple" style="font-weight:600;">Loading...</span></small>
+                                <div id="domain-verification-status" style="margin-top: 8px; font-size: 0.85rem; font-weight: 600;" class="hidden"></div>
+                            </div>
+                            <div class="input-group" style="flex-direction: row; align-items: center; gap: 12px; margin-bottom: 24px;">
+                                <input type="checkbox" id="setting-public-reg" style="width: auto; height: 18px; margin: 0; cursor: pointer;">
+                                <label for="setting-public-reg" style="cursor: pointer; user-select: none;">Allow Public Registration</label>
+                            </div>
+                            <div class="input-group" id="trial-duration-group">
+                                <label for="setting-trial-days">Default Trial Duration (Days)</label>
+                                <input type="number" id="setting-trial-days" required min="1" max="365" value="3">
+                                <small class="text-muted">Standard account duration in days for public registrations</small>
+                            </div>
+                            <div id="settings-success" class="success-alert hidden">
+                                <i class="fa-solid fa-circle-check"></i> Settings updated successfully!
+                            </div>
+                            <button type="submit" class="btn btn-purple">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Settings
+                            </button>
+                        </form>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- USER PORTAL DASHBOARD -->
+        <div id="user-portal-container" class="dashboard-wrapper hidden" style="justify-content: center; align-items: center; padding: 40px 20px;">
+            <div class="auth-card glass glow-purple" style="max-width: 600px; width: 100%; padding: 35px 30px; text-align: left;">
+                <div class="auth-header" style="text-align: center;">
+                    <i class="fa-solid fa-user-shield auth-logo glow-text-purple"></i>
+                    <h2>User Account Portal</h2>
+                    <p>Check your SSH WebSocket status and copy configurations</p>
+                </div>
+                
+                <div class="success-details" style="margin-bottom: 24px;">
+                    <div class="detail-row" style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <strong>Account Status:</strong> <span id="user-portal-status" class="badge"></span>
+                        </div>
+                        <div>
+                            <strong>Active Conns:</strong> <span id="user-portal-conns" class="badge"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-row" style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <strong>Username:</strong> <code id="user-portal-username" class="text-blue" style="font-size: 1.05rem;"></code>
+                        </div>
+                        <button class="btn btn-sm btn-outline-blue btn-copy-inline" data-target="user-portal-username"><i class="fa-solid fa-copy"></i></button>
+                    </div>
+                    <div class="detail-row" style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <strong>Password:</strong> <code id="user-portal-password" class="text-blue" style="font-size: 1.05rem;"></code>
+                        </div>
+                        <button class="btn btn-sm btn-outline-blue btn-copy-inline" data-target="user-portal-password"><i class="fa-solid fa-copy"></i></button>
+                    </div>
+                    <div class="detail-row" style="margin-bottom: 12px;">
+                        <strong>Expiry Date:</strong> <span id="user-portal-expiry" class="text-purple" style="font-weight: 500;"></span>
+                    </div>
+                    <div class="detail-row" style="margin-bottom: 12px;">
+                        <strong>Device Limit:</strong> <span id="user-portal-limit"></span>
+                    </div>
+                    
+                    <div class="payload-box" style="margin-top: 18px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <label style="font-weight:600; margin:0;">HTTP Custom Format (SSH Line)</label>
+                            <button class="btn btn-sm btn-outline-purple btn-copy-inline" data-target="user-portal-custom-line"><i class="fa-solid fa-copy"></i> Copy Line</button>
+                        </div>
+                        <input type="text" id="user-portal-custom-line" readonly style="font-family: monospace; font-size: 0.9rem; background: rgba(0,0,0,0.35); width: 100%;">
+                    </div>
+
+                    <div class="payload-box" style="margin-top: 18px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <label style="font-weight:600; margin:0;">WebSocket HTTP Payload</label>
+                            <button class="btn btn-sm btn-outline-purple btn-copy-inline" data-target="user-portal-payload"><i class="fa-solid fa-copy"></i> Copy Payload</button>
+                        </div>
+                        <textarea id="user-portal-payload" class="code-area" readonly style="height: 80px; font-size: 0.8rem; background: rgba(0,0,0,0.35); width: 100%;"></textarea>
+                    </div>
+                </div>
+                
+                <button id="btn-user-portal-logout" class="btn btn-danger btn-block">
+                    <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                </button>
+            </div>
+        </div>
+
+        <!-- CREATE USER MODAL -->
+        <div id="create-modal" class="modal-wrapper hidden">
+            <div class="modal glass glow-purple">
+                <div class="modal-header">
+                    <h2><i class="fa-solid fa-user-plus"></i> Create SSH WebSocket Account</h2>
+                    <button class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="modal-body">
+                    <form id="create-account-form">
+                        <div class="input-group">
+                            <label for="create-username">Username</label>
+                            <input type="text" id="create-username" required placeholder="Alphanumeric usernames only" autocomplete="off">
+                        </div>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="create-password">Password</label>
+                                <input type="text" id="create-password" required placeholder="Account Password">
+                            </div>
+                            <div class="input-group">
+                                <label for="create-limit">Login Limit (Devices)</label>
+                                <input type="number" id="create-limit" required value="1" min="1">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="create-duration">Account Duration (Days)</label>
+                            <select id="create-duration">
+                                <option value="3">3 Days (Trial)</option>
+                                <option value="7">7 Days (Weekly)</option>
+                                <option value="30" selected>30 Days (Monthly)</option>
+                                <option value="60">60 Days (Bi-monthly)</option>
+                                <option value="90">90 Days (Quarterly)</option>
+                                <option value="custom">Custom Date</option>
+                            </select>
+                        </div>
+                        <div id="custom-expiry-group" class="input-group hidden">
+                            <label for="create-expiry-date">Custom Expiry Date</label>
+                            <input type="date" id="create-expiry-date">
+                        </div>
+                        <div class="input-group">
+                            <label for="create-desc">Description (Optional)</label>
+                            <input type="text" id="create-desc" placeholder="Client name or notes">
+                        </div>
+                        <button type="submit" class="btn btn-purple btn-block">
+                            Create Account
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- EDIT DURATION / RENEW MODAL -->
+        <div id="renew-modal" class="modal-wrapper hidden">
+            <div class="modal glass glow-green">
+                <div class="modal-header">
+                    <h2><i class="fa-solid fa-calendar-plus"></i> Renew/Extend Account</h2>
+                    <button class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="modal-body">
+                    <form id="renew-account-form">
+                        <input type="hidden" id="renew-username">
+                        <p class="modal-info-text">Extend expiration for account: <strong id="renew-user-display" class="text-purple"></strong></p>
+                        
+                        <div class="input-group">
+                            <label for="renew-duration">Extend Duration</label>
+                            <select id="renew-duration">
+                                <option value="3">Extend 3 Days</option>
+                                <option value="7">Extend 7 Days</option>
+                                <option value="30" selected>Extend 30 Days</option>
+                                <option value="60">Extend 60 Days</option>
+                                <option value="custom">Custom Expiry Date</option>
+                            </select>
+                        </div>
+                        <div id="renew-custom-expiry-group" class="input-group hidden">
+                            <label for="renew-expiry-date">New Expiry Date</label>
+                            <input type="date" id="renew-expiry-date">
+                        </div>
+                        <button type="submit" class="btn btn-green btn-block">
+                            Extend Account
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- EDIT PASSWORD MODAL -->
+        <div id="password-modal" class="modal-wrapper hidden">
+            <div class="modal glass glow-blue">
+                <div class="modal-header">
+                    <h2><i class="fa-solid fa-key"></i> Change Password</h2>
+                    <button class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="modal-body">
+                    <form id="password-account-form">
+                        <input type="hidden" id="password-username">
+                        <p class="modal-info-text">Change password for account: <strong id="password-user-display" class="text-blue"></strong></p>
+                        
+                        <div class="input-group">
+                            <label for="change-password-input">New Password</label>
+                            <input type="text" id="change-password-input" required placeholder="Enter new password">
+                        </div>
+                        <button type="submit" class="btn btn-blue btn-block">
+                            Update Password
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- EDIT LIMIT MODAL -->
+        <div id="limit-modal" class="modal-wrapper hidden">
+            <div class="modal glass glow-blue">
+                <div class="modal-header">
+                    <h2><i class="fa-solid fa-arrow-up-9-digit"></i> Edit Connection Limit</h2>
+                    <button class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="modal-body">
+                    <form id="limit-account-form">
+                        <input type="hidden" id="limit-username">
+                        <p class="modal-info-text">Update max device limit for: <strong id="limit-user-display" class="text-blue"></strong></p>
+                        
+                        <div class="input-group">
+                            <label for="change-limit-input">Max Concurrent Connections</label>
+                            <input type="number" id="change-limit-input" required min="1" value="1">
+                        </div>
+                        <button type="submit" class="btn btn-blue btn-block">
+                            Update Limit
+                        </button>
+                    </form>
+                </div>
+            </div>
+        <!-- CONFIGURATION DETAILS MODAL -->
+        <div id="config-details-modal" class="modal-wrapper hidden">
+            <div class="modal glass glow-purple" style="max-width: 550px;">
+                <div class="modal-header">
+                    <h2><i class="fa-solid fa-circle-info"></i> VPN Connection Details</h2>
+                    <button class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="modal-body">
+                    <p class="modal-info-text">Credentials for account: <strong id="config-display-username" class="text-purple"></strong></p>
+                    
+                    <div class="success-details" style="text-align: left; margin-bottom: 24px;">
+                        <div class="detail-row" style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+                            <div>
+                                <strong>Host / IP:</strong> <code id="config-host-val" class="text-blue" style="font-size: 1.05rem;"></code>
+                            </div>
+                            <button class="btn btn-sm btn-outline-blue btn-copy-inline" data-target="config-host-val"><i class="fa-solid fa-copy"></i></button>
+                        </div>
+                        <div class="detail-row" style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+                            <div>
+                                <strong>Port:</strong> <code id="config-port-val" class="text-blue" style="font-size: 1.05rem;"></code>
+                            </div>
+                            <button class="btn btn-sm btn-outline-blue btn-copy-inline" data-target="config-port-val"><i class="fa-solid fa-copy"></i></button>
+                        </div>
+                        <div class="detail-row" style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+                            <div>
+                                <strong>Username:</strong> <code id="config-user-val" class="text-blue" style="font-size: 1.05rem;"></code>
+                            </div>
+                            <button class="btn btn-sm btn-outline-blue btn-copy-inline" data-target="config-user-val"><i class="fa-solid fa-copy"></i></button>
+                        </div>
+                        <div class="detail-row" style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+                            <div>
+                                <strong>Password:</strong> <code id="config-pass-val" class="text-blue" style="font-size: 1.05rem;"></code>
+                            </div>
+                            <button class="btn btn-sm btn-outline-blue btn-copy-inline" data-target="config-pass-val"><i class="fa-solid fa-copy"></i></button>
+                        </div>
+                        
+                        <div class="payload-box" style="margin-top: 18px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <label style="font-weight:600; margin:0;">HTTP Custom Format (SSH Account Line)</label>
+                                <button class="btn btn-sm btn-outline-purple btn-copy-inline" data-target="config-custom-format-val"><i class="fa-solid fa-copy"></i> Copy Line</button>
+                            </div>
+                            <input type="text" id="config-custom-format-val" readonly style="font-family: monospace; font-size: 0.9rem; background: rgba(0,0,0,0.35);">
+                            <small class="text-muted">Direct paste into HTTP Custom (SSH Config field)</small>
+                        </div>
+
+                        <div class="payload-box" style="margin-top: 18px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <label style="font-weight:600; margin:0;">WebSocket HTTP Payload</label>
+                                <button class="btn btn-sm btn-outline-purple btn-copy-inline" data-target="config-payload-val"><i class="fa-solid fa-copy"></i> Copy Payload</button>
+                            </div>
+                            <textarea id="config-payload-val" class="code-area" readonly style="height: 80px; font-size: 0.8rem; background: rgba(0,0,0,0.35);"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <!-- Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>

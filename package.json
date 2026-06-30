@@ -1,0 +1,17 @@
+{
+  "name": "ssh-ws-manager",
+  "version": "1.0.0",
+  "description": "Premium VPS SSH WebSocket App Manager",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "proxy": "node ws-proxy.js",
+    "daemon": "node limit-daemon.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "ws": "^8.16.0"
+  },
+  "author": "Antigravity",
+  "license": "MIT"
+}

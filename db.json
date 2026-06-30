@@ -1,0 +1,43 @@
+{
+  "settings": {
+    "admin_username": "admin@admin.com",
+    "admin_password_hash": "54abae723b73c23212b548dfee204eeee434e2525854c8ce81b8e7a27842168dcb7fcfafd613b25818e8ca7ec9821ebfde4db735290f33a2a6d4b2e2b469d567",
+    "admin_password_salt": "a48d45b3128831b5a70884a807094f68",
+    "ws_port": 8080,
+    "ssh_port": 22,
+    "app_port": 3000,
+    "decoy_url": "https://google.com",
+    "allow_public_registration": true,
+    "default_trial_days": 3,
+    "is_first_run": false
+  },
+  "users": [
+    {
+      "username": "tfthgfh",
+      "password": "123456",
+      "limit": 1,
+      "expires_at": "2026-07-03",
+      "created_at": "2026-06-30T18:51:42.173Z",
+      "status": "active",
+      "description": "Public Registration"
+    },
+    {
+      "username": "fytjytkyu",
+      "password": "kytjytujyt",
+      "limit": 1,
+      "expires_at": "2026-07-03",
+      "created_at": "2026-06-30T18:52:08.415Z",
+      "status": "active",
+      "description": "Public Registration"
+    },
+    {
+      "username": "jghjhgjhg",
+      "password": "111111",
+      "limit": 1,
+      "expires_at": "2026-07-03",
+      "created_at": "2026-06-30T18:54:39.443Z",
+      "status": "active",
+      "description": "Public Registration"
+    }
+  ]
+}
