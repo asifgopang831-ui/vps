@@ -214,7 +214,7 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
             // Set HTTP Custom format line
             document.getElementById('reg-success-custom-val').value = `${host}:${wsPort}@${data.user.username}:${data.user.password}`;
             
-            const payload = `GET / HTTP/1.1[crlf]Host: ${bug}[crlf]Connection: Upgrade[crlf]Upgrade: websocket[crlf]User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)[crlf][crlf]`;
+            const payload = `GET wss://${host}/ HTTP/1.1[crlf]Host: ${host}[crlf]Upgrade: Websocket[crlf]Connection: Keep-Alive[crlf][crlf]`;
             document.getElementById('reg-success-payload').value = payload;
 
             showContainer('reg-success');
@@ -546,11 +546,11 @@ function updatePayloadTexts() {
     const port = document.getElementById('payload-port').value || '80';
     const host = vpsIp || 'YOUR_VPS_IP';
 
-    // standard HTTP Upgrade payload
-    const payload = `GET / HTTP/1.1[crlf]Host: ${bug}[crlf]Connection: Upgrade[crlf]Upgrade: websocket[crlf]User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)[crlf][crlf]`;
+    // standard HTTP Upgrade payload with wss format
+    const payload = `GET wss://${host}/ HTTP/1.1[crlf]Host: ${host}[crlf]Upgrade: Websocket[crlf]Connection: Keep-Alive[crlf][crlf]`;
     document.getElementById('ws-payload-text').value = payload;
 
-    const direct = `Host/IP: ${host}\nPort: ${port}\nDecoy/SNI: ${bug}\nPayload: GET / HTTP/1.1[crlf]Host: ${bug}[crlf]Connection: Upgrade[crlf]Upgrade: websocket[crlf][crlf]`;
+    const direct = `Host/IP: ${host}\nPort: ${port}\nDecoy/SNI: ${bug}\nPayload: GET wss://${host}/ HTTP/1.1[crlf]Host: ${host}[crlf]Upgrade: Websocket[crlf]Connection: Keep-Alive[crlf][crlf]`;
     document.getElementById('direct-config-text').value = direct;
 }
 
@@ -785,9 +785,8 @@ async function showConfigModal(username, password) {
         const customFormat = `${host}:${port}@${username}:${password}`;
         document.getElementById('config-custom-format-val').value = customFormat;
         
-        // WS Payload
-        const bug = 'www.google.com';
-        const payload = `GET / HTTP/1.1[crlf]Host: ${bug}[crlf]Connection: Upgrade[crlf]Upgrade: websocket[crlf]User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)[crlf][crlf]`;
+        // WS Payload with wss format
+        const payload = `GET wss://${host}/ HTTP/1.1[crlf]Host: ${host}[crlf]Upgrade: Websocket[crlf]Connection: Keep-Alive[crlf][crlf]`;
         document.getElementById('config-payload-val').value = payload;
         
         openModal('config-details-modal');
@@ -870,9 +869,8 @@ async function loadUserPortal() {
         const port = cachedSettings.ws_port || '8080';
         document.getElementById('user-portal-custom-line').value = `${host}:${port}@${profile.username}:${profile.password}`;
 
-        // Payload
-        const bug = 'www.google.com';
-        document.getElementById('user-portal-payload').value = `GET / HTTP/1.1[crlf]Host: ${bug}[crlf]Connection: Upgrade[crlf]Upgrade: websocket[crlf]User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)[crlf][crlf]`;
+        // Payload with wss format
+        document.getElementById('user-portal-payload').value = `GET wss://${host}/ HTTP/1.1[crlf]Host: ${host}[crlf]Upgrade: Websocket[crlf]Connection: Keep-Alive[crlf][crlf]`;
 
     } catch (e) {
         console.error('Failed to load user portal:', e);
